@@ -13,8 +13,6 @@ $(document).ready(function() {
     var newHour = $("<div>");
     var newTimeBlock = $("<div>");
     var newSaveBtn = $("<div>");
-    var newSaveA = $("<a>");
-    var newSaveIcon = $("<span>");
 
     newRow.addClass("row");
 
@@ -36,10 +34,7 @@ $(document).ready(function() {
     newRow.append(newTimeBlock);
 
     newSaveBtn.addClass("save-btn col-md-2");
-    newSaveA.attr("href", "#");
-    newSaveBtn.append(newSaveA);
-    newSaveIcon.addClass("glyphicon glyphicon-floppy-disk");
-    newSaveA.append(newSaveIcon);
+    newSaveBtn.html('<i class="far fa-calendar-plus"></i>');
     newRow.append(newSaveBtn);
 
     $(".container").append(newRow);
