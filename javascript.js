@@ -1,9 +1,8 @@
 $(document).ready(function() {
   // build day
-  // getting an error with moment so using Date for now...
-  //var currHour = moment.hour();
-  var currHour = new Date();
-  currHour = currHour.getHours();
+  var currHour = moment().hour();
+  //var currHour = new Date();
+  //currHour = currHour.getHours();
 
   // use static array for now. use moment methods later.
   var hours = [9, 10, 11, 12, 1, 2, 3, 4, 5];
@@ -12,6 +11,7 @@ $(document).ready(function() {
     var newRow = $("<div>");
     var newHour = $("<div>");
     var newTimeBlock = $("<div>");
+    var newTextArea = $("<textarea>");
     var newSaveBtn = $("<div>");
 
     newRow.addClass("row");
@@ -24,6 +24,9 @@ $(document).ready(function() {
     }
     newRow.append(newHour);
 
+    newTextArea.attr("id", "hour" + hours[i]);
+    newTimeBlock.append(newTextArea);
+
     if (hours[i] < currHour) {
       newTimeBlock.addClass("time-block past col-md-8");
     } else if (hours[i] === currHour) {
@@ -33,10 +36,16 @@ $(document).ready(function() {
     }
     newRow.append(newTimeBlock);
 
-    newSaveBtn.addClass("save-btn col-md-2");
+    newSaveBtn.addClass("saveBtn col-md-2");
+    newSaveBtn.attr("id", hours[i]);
     newSaveBtn.html('<i class="far fa-calendar-plus"></i>');
     newRow.append(newSaveBtn);
 
     $(".container").append(newRow);
   }
+
+  $(".saveBtn").on("click", function() {
+    var ta = $(this).closest(".time-block");
+    console.log(ta.attr("id"));
+  });
 });
