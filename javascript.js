@@ -1,4 +1,9 @@
 $(document).ready(function() {
+  function getStorage(hour) {
+    var data = JSON.parse(localStorage.getItem(hour));
+    return data;
+  }
+
   function buildDay() {
     // get 8AM
     var hour = moment()
@@ -8,44 +13,47 @@ $(document).ready(function() {
     var currHour = moment().startOf("hour");
 
     for (var i = 0; i < 10; i++) {
+      // Create new elements
       var newRow = $("<div>");
       var newHour = $("<div>");
       var newTimeBlock = $("<div>");
       var newTextArea = $("<textarea>");
       var newSaveBtn = $("<div>");
+
+      // Assign IDs
+      newSaveBtn.attr("id", hour.hour());
+      newTextArea.attr("id", "hour" + hour.hour());
+
+      // Assign classes
       newRow.addClass("row");
       newHour.addClass("hour col-md-2");
       newTimeBlock.addClass("time-block");
-
-      // label hour
-      newHour.text(hour.format("ha"));
-
-      // add hour to row
-      newRow.append(newHour);
-
-      newTextArea.attr("id", "hour" + hour.hour());
-      // add textarea to time-block
-      newTimeBlock.append(newTextArea);
-
+      newSaveBtn.addClass("saveBtn col-md-2");
       if (hour.isBefore(currHour)) {
-        //console.log(hour + " is before " + currHour);
         newTimeBlock.addClass("time-block past col-md-8");
       } else if (hour.isSame(currHour)) {
-        //console.log(hour + " is same " + currHour);
         newTimeBlock.addClass("time-block present col-md-8");
       } else if (hour.isAfter(currHour)) {
-        //console.log(hour + " is after " + currHour);
         newTimeBlock.addClass("time-block future col-md-8");
       }
-      newRow.append(newTimeBlock);
 
-      newSaveBtn.addClass("saveBtn col-md-2");
-      newSaveBtn.attr("id", hour.hour());
+      //Fill content
+      // Check localStorage for existing data
+      var data = JSON.parse(localStorage.getItem(hour.hour()));
+      if (data) newTextArea.val(data.task);
+      // Label hour
+      newHour.text(hour.format("ha"));
       newSaveBtn.html('<i class="far fa-calendar-plus"></i>');
+
+      // Append elements to page
+      newRow.append(newHour);
+      newTimeBlock.append(newTextArea);
+      newRow.append(newTimeBlock);
       newRow.append(newSaveBtn);
-      // next hour
-      hour.add(1, "hour").format("ha");
       $(".container").append(newRow);
+
+      // Iterate hour
+      hour.add(1, "hour").format("ha");
     }
   }
 
