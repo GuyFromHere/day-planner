@@ -1,7 +1,41 @@
 $(document).ready(function() {
-  function getStorage(hour) {
-    var data = JSON.parse(localStorage.getItem(hour));
-    return data;
+  // Set current day of year
+  var day = moment().dayOfYear();
+  function getDay() {
+    var days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ];
+
+    var months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+
+    return (
+      days[moment().day()] +
+      ", " +
+      months[moment().month()] +
+      " " +
+      moment().date() +
+      " " +
+      moment().year()
+    );
   }
 
   function buildDay() {
@@ -11,6 +45,8 @@ $(document).ready(function() {
       .startOf("hour");
     // get current hour
     var currHour = moment().startOf("hour");
+
+    console.log(getDay());
 
     for (var i = 0; i < 10; i++) {
       // Create new elements
@@ -38,9 +74,12 @@ $(document).ready(function() {
       }
 
       //Fill content
+      $("#currentDay").text(getDay());
       // Check localStorage for existing data
-      var data = JSON.parse(localStorage.getItem(hour.hour()));
-      if (data) newTextArea.val(data.task);
+      // Create empty array if nothing found
+      var data = JSON.parse(localStorage.getItem(day)) || [];
+      if (data.hour === hour.hour()) newTextArea.val(data.task);
+
       // Label hour
       newHour.text(hour.format("ha"));
       newSaveBtn.html('<i class="far fa-calendar-plus"></i>');
@@ -61,10 +100,16 @@ $(document).ready(function() {
   buildDay();
 
   $(".saveBtn").on("click", function() {
+    // create array for object
+    var arrObj = [];
+    // get hour to update
     var hourId = $(this).attr("id");
+    // get task value
     var task = $("#hour" + hourId).val();
+    // Create object with task data
     var obj = { hour: hourId, task: task };
-
-    localStorage.setItem(hourId, JSON.stringify(obj));
+    // push object to array
+    arrObj.push(obj);
+    localStorage.setItem(day, JSON.stringify(arrObj));
   });
 });
