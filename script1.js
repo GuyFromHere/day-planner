@@ -1,10 +1,8 @@
 $(document).ready(function() {
-  // Set current day of year
-  var day = moment().dayOfYear();
-
   var dayObj = JSON.parse(localStorage.getItem(day)) || [];
-
-  function getDay() {
+  var day = "";
+  function getDay(day) {
+    if (day === undefined) day = moment().day();
     var days = [
       "Sunday",
       "Monday",
@@ -41,13 +39,25 @@ $(document).ready(function() {
     );
   }
 
-  function buildDay() {
+  function buildDay(day) {
+    if (day === undefined) day = moment().dayOfYear();
+    console.log(
+      moment()
+        .dayOfYear(day)
+        .format("dddd, MMMM Do YYYY")
+    );
     // get 8AM
-    var hour = moment()
+    var hour = moment().dayOfYear(day);
+    hour = hour.set("hour", 8).startOf("hour");
+
+    /* var hour = moment()
       .set("hour", 8)
-      .startOf("hour");
+      .startOf("hour"); */
     // get current hour
-    var currHour = moment().startOf("hour");
+    /* var currHour = moment().startOf("hour"); */
+    var currHour = moment()
+      .dayOfYear(day)
+      .startOf("hour");
 
     for (var i = 0; i < 10; i++) {
       // Create new elements
@@ -77,19 +87,22 @@ $(document).ready(function() {
       }
 
       //Fill content
-      $("#currentDay").text(getDay());
+      $("#currentDay").text(
+        moment()
+          .dayOfYear(day)
+          .format("dddd, MMMM Do YYYY")
+      );
+
       otherDays.html(
         "<span id='prevDay'><<< Prev Day</span><span id='nextDay'>Next Day >>></span>"
       );
       // Create day object if it does not exist.
       // If it does exist and there's info in a task, put it in the textarea
-      //console.log(dayObj[i].hour + " " + dayObj[i].task);
       if (dayObj.length <= 10) {
         dayObj.push({ hour: hour.hour(), task: "" });
       } else if (dayObj[i].task != "") {
         newTextArea.val(dayObj[i].task);
       }
-      console.log(dayObj[i].hour + " " + dayObj[i].task);
 
       // Label hour
       newHour.text(hour.format("ha"));
@@ -124,13 +137,18 @@ $(document).ready(function() {
       // update obj in localStorage
       localStorage.setItem(day, JSON.stringify(dayObj));
     });
+
+    $("#prevDay").on("click", function() {
+      day -= 1;
+      buildDay(day);
+    });
+
+    $("#nextDay").on("click", function() {
+      day += 1;
+      buildDay(day);
+    });
   }
 
   // build day
-  buildDay(day);
-
-  $("#prevDay").on("click", function() {
-    day -= 1;
-    buildDay(day);
-  });
+  buildDay();
 });
