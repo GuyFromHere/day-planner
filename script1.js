@@ -3,7 +3,6 @@ $(document).ready(function() {
   var day = moment().dayOfYear();
 
   var dayObj = JSON.parse(localStorage.getItem(day)) || [];
-  console.log(dayObj);
 
   function getDay() {
     var days = [
@@ -50,10 +49,9 @@ $(document).ready(function() {
     // get current hour
     var currHour = moment().startOf("hour");
 
-    console.log(getDay());
-
     for (var i = 0; i < 10; i++) {
       // Create new elements
+      var otherDays = $("<div>");
       var newRow = $("<div>");
       var newHour = $("<div>");
       var newTimeBlock = $("<div>");
@@ -61,6 +59,7 @@ $(document).ready(function() {
       var newSaveBtn = $("<div>");
 
       // Assign IDs
+      otherDays.attr("id", "otherDays");
       newSaveBtn.attr("id", hour.hour());
       newTextArea.attr("id", "hour" + hour.hour());
 
@@ -79,16 +78,26 @@ $(document).ready(function() {
 
       //Fill content
       $("#currentDay").text(getDay());
-      // Check localStorage for existing data
-      // Create empty array if nothing found
-      var data = JSON.parse(localStorage.getItem(day)) || [];
-      if (data.hour === hour.hour()) newTextArea.val(data.task);
+      otherDays.html(
+        "<span id='prevDay'><<< Prev Day</span><span id='nextDay'>Next Day >>></span>"
+      );
+      // Create day object if it does not exist.
+      // If it does exist and there's info in a task, put it in the textarea
+      //console.log(dayObj[i].hour + " " + dayObj[i].task);
+      if (dayObj.length <= 10) {
+        dayObj.push({ hour: hour.hour(), task: "" });
+      } else if (dayObj[i].task != "") {
+        newTextArea.val(dayObj[i].task);
+      }
+      console.log(dayObj[i].hour + " " + dayObj[i].task);
 
       // Label hour
       newHour.text(hour.format("ha"));
       newSaveBtn.html('<i class="far fa-calendar-plus"></i>');
 
       // Append elements to page
+      $("#currentDay").append(otherDays);
+      prevDay.append(nextDay);
       newRow.append(newHour);
       newTimeBlock.append(newTextArea);
       newRow.append(newTimeBlock);
@@ -100,22 +109,28 @@ $(document).ready(function() {
     }
 
     $(".saveBtn").on("click", function() {
-      // create array for object
-      var arrObj = [];
       // get hour to update
-      var hourId = $(this).attr("id");
+      var hourId = parseInt($(this).attr("id"));
       // get task value
       var task = $("#hour" + hourId).val();
-
-      // push object to array
-      // ACTUALLY...push adds it out of order.
-      // What we want to do is create the array and initialize each object with the hour
-      // value so we can edit its task rather than add new objects to the array with each update
-      arrObj.push({ hour: hourId, task: task });
-      localStorage.setItem(day, JSON.stringify(arrObj));
+      // get index of task
+      var index = dayObj
+        .map(function(e) {
+          return e.hour;
+        })
+        .indexOf(hourId);
+      // Update task
+      dayObj[index].task = task;
+      // update obj in localStorage
+      localStorage.setItem(day, JSON.stringify(dayObj));
     });
   }
 
   // build day
-  buildDay();
+  buildDay(day);
+
+  $("#prevDay").on("click", function() {
+    day -= 1;
+    buildDay(day);
+  });
 });

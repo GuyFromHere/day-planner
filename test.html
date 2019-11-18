@@ -19,60 +19,20 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
-    <title>Document</title>
+    <title>Work Day Scheduler</title>
   </head>
+
   <body>
-    <div class="container"></div>
+    <header class="jumbotron">
+      <h1 class="display-3">Work Day Scheduler</h1>
+      <p class="lead">A simple calendar app for scheduling your work day</p>
+      <p id="currentDay" class="lead"></p>
+    </header>
+    <div class="container">
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script>
-      function buildDay() {
-        // get 8AM
-        var hour = moment()
-          .set("hour", 8)
-          .startOf("hour");
-        // get current hour
-        var currHour = moment().startOf("hour");
-
-        for (var i = 0; i < 10; i++) {
-          var newRow = $("<div>");
-          var newHour = $("<div>");
-          var newTimeBlock = $("<div>");
-          var newTextArea = $("<textarea>");
-          var newSaveBtn = $("<div>");
-
-          // label hour
-          newHour.text(hour.format("ha"));
-          // add hour to row
-          newRow.append(newHour);
-
-          newTextArea.attr("id", "hour" + hour.format("ha"));
-          // add textarea to time-block
-          newTimeBlock.append(newTextArea);
-
-          if (hour.isBefore(currHour)) {
-            //console.log(hour + " is before " + currHour);
-            newTimeBlock.addClass("time-block past col-md-8");
-          } else if (hour.isSame(currHour)) {
-            //console.log(hour + " is same " + currHour);
-            newTimeBlock.addClass("time-block present col-md-8");
-          } else if (hour.isAfter(currHour)) {
-            //console.log(hour + " is after " + currHour);
-            newTimeBlock.addClass("time-block future col-md-8");
-          }
-          newRow.append(newTimeBlock);
-
-          newSaveBtn.addClass("saveBtn col-md-2");
-          newSaveBtn.attr("id", hour.hour());
-          newSaveBtn.html('<i class="far fa-calendar-plus"></i>');
-          newRow.append(newSaveBtn);
-          // next hour
-          hour.add(1, "hour").format("ha");
-          $(".container").append(newRow);
-        }
-      }
-      buildDay();
-    </script>
+      <script type="text/javascript" src="script1.js"></script>
+    </div>
   </body>
 </html>
