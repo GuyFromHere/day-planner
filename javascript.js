@@ -1,11 +1,7 @@
 $(document).ready(function() {
-  // Set current day of year
-  var day = moment().dayOfYear();
-
-  var dayObj = JSON.parse(localStorage.getItem(day)) || [];
-  console.log(dayObj);
-
-  function getDay() {
+  var day = "";
+  function getDay(day) {
+    if (day === undefined) day = moment().day();
     var days = [
       "Sunday",
       "Monday",
@@ -42,18 +38,33 @@ $(document).ready(function() {
     );
   }
 
-  function buildDay() {
-    // get 8AM
-    var hour = moment()
-      .set("hour", 8)
-      .startOf("hour");
-    // get current hour
-    var currHour = moment().startOf("hour");
+  function buildDay(day) {
+    // clear container before building page
+    $(".container").empty();
 
-    console.log(getDay());
+    // REM
+    //var dayObj = JSON.parse(localStorage.getItem(day)) || [];
+
+    // Set Day
+    if (day === undefined) day = moment().dayOfYear();
+    // Get obj or empty array
+    if (localStorage[day]) {
+      var dayObj = JSON.parse(localStorage.getItem(day));
+    } else {
+      var dayObj = [];
+    }
+
+    // get 8AM
+    var hour = moment().dayOfYear(day);
+    hour = hour.set("hour", 8).startOf("hour");
+    // Get current hour for classes
+    var currHour = moment()
+      .dayOfYear(day)
+      .startOf("hour");
 
     for (var i = 0; i < 10; i++) {
       // Create new elements
+      var otherDays = $("<div>");
       var newRow = $("<div>");
       var newHour = $("<div>");
       var newTimeBlock = $("<div>");
@@ -61,6 +72,7 @@ $(document).ready(function() {
       var newSaveBtn = $("<div>");
 
       // Assign IDs
+      otherDays.attr("id", "otherDays");
       newSaveBtn.attr("id", hour.hour());
       newTextArea.attr("id", "hour" + hour.hour());
 
@@ -78,17 +90,32 @@ $(document).ready(function() {
       }
 
       //Fill content
-      $("#currentDay").text(getDay());
-      // Check localStorage for existing data
-      // Create empty array if nothing found
-      var data = JSON.parse(localStorage.getItem(day)) || [];
-      if (data.hour === hour.hour()) newTextArea.val(data.task);
+      $("#currentDay").text(
+        moment()
+          .dayOfYear(day)
+          .format("dddd, MMMM Do YYYY")
+      );
+      otherDays.html(
+        "<span id='prevDay'><<< Prev Day</span><span id='nextDay'>Next Day >>></span>"
+      );
+      //newTextArea.val(dayObj[i].task);
+
+      // Create day object if it does not exist.
+      // If it does exist and there's info in a task, put it in the textarea
+      if (dayObj.length <= 10) {
+        dayObj.push({ hour: hour.hour(), task: "" });
+        newTextArea.val(dayObj[i].task);
+      } else {
+        newTextArea.val(dayObj[i].task);
+      }
 
       // Label hour
       newHour.text(hour.format("ha"));
       newSaveBtn.html('<i class="far fa-calendar-plus"></i>');
 
       // Append elements to page
+      $("#currentDay").append(otherDays);
+      prevDay.append(nextDay);
       newRow.append(newHour);
       newTimeBlock.append(newTextArea);
       newRow.append(newTimeBlock);
@@ -99,20 +126,32 @@ $(document).ready(function() {
       hour.add(1, "hour").format("ha");
     }
 
-    $(".saveBtn").on("click", function() {
-      // create array for object
-      var arrObj = [];
-      // get hour to update
-      var hourId = $(this).attr("id");
-      // get task value
-      var task = $("#hour" + hourId).val();
+    // After loop, add obj back to localStorage
+    localStorage.setItem(day, JSON.stringify(dayObj));
 
-      // push object to array
-      // ACTUALLY...push adds it out of order.
-      // What we want to do is create the array and initialize each object with the hour
-      // value so we can edit its task rather than add new objects to the array with each update
-      arrObj.push({ hour: hourId, task: task });
-      localStorage.setItem(day, JSON.stringify(arrObj));
+    $(".saveBtn").on("click", function() {
+      // get hour and task
+      var hourId = parseInt($(this).attr("id"));
+      var task = $("#hour" + hourId).val();
+      // get index of task
+      var index = dayObj
+        .map(function(e) {
+          return e.hour;
+        })
+        .indexOf(hourId);
+      // Update task / localStorage
+      dayObj[index].task = task;
+      localStorage.setItem(day, JSON.stringify(dayObj));
+    });
+
+    $("#prevDay").on("click", function() {
+      day -= 1;
+      buildDay(day);
+    });
+
+    $("#nextDay").on("click", function() {
+      day += 1;
+      buildDay(day);
     });
   }
 

@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  var dayObj = JSON.parse(localStorage.getItem(day)) || [];
   var day = "";
   function getDay(day) {
     if (day === undefined) day = moment().day();
@@ -40,21 +39,25 @@ $(document).ready(function() {
   }
 
   function buildDay(day) {
+    // clear container before building page
+    $(".container").empty();
+
+    // REM
+    //var dayObj = JSON.parse(localStorage.getItem(day)) || [];
+
+    // Set Day
     if (day === undefined) day = moment().dayOfYear();
-    console.log(
-      moment()
-        .dayOfYear(day)
-        .format("dddd, MMMM Do YYYY")
-    );
+    // Get obj or empty array
+    if (localStorage[day]) {
+      var dayObj = JSON.parse(localStorage.getItem(day));
+    } else {
+      var dayObj = [];
+    }
+
     // get 8AM
     var hour = moment().dayOfYear(day);
     hour = hour.set("hour", 8).startOf("hour");
-
-    /* var hour = moment()
-      .set("hour", 8)
-      .startOf("hour"); */
-    // get current hour
-    /* var currHour = moment().startOf("hour"); */
+    // Get current hour for classes
     var currHour = moment()
       .dayOfYear(day)
       .startOf("hour");
@@ -92,15 +95,17 @@ $(document).ready(function() {
           .dayOfYear(day)
           .format("dddd, MMMM Do YYYY")
       );
-
       otherDays.html(
         "<span id='prevDay'><<< Prev Day</span><span id='nextDay'>Next Day >>></span>"
       );
+      //newTextArea.val(dayObj[i].task);
+
       // Create day object if it does not exist.
       // If it does exist and there's info in a task, put it in the textarea
       if (dayObj.length <= 10) {
         dayObj.push({ hour: hour.hour(), task: "" });
-      } else if (dayObj[i].task != "") {
+        newTextArea.val(dayObj[i].task);
+      } else {
         newTextArea.val(dayObj[i].task);
       }
 
@@ -121,10 +126,12 @@ $(document).ready(function() {
       hour.add(1, "hour").format("ha");
     }
 
+    // After loop, add obj back to localStorage
+    localStorage.setItem(day, JSON.stringify(dayObj));
+
     $(".saveBtn").on("click", function() {
-      // get hour to update
+      // get hour and task
       var hourId = parseInt($(this).attr("id"));
-      // get task value
       var task = $("#hour" + hourId).val();
       // get index of task
       var index = dayObj
@@ -132,9 +139,8 @@ $(document).ready(function() {
           return e.hour;
         })
         .indexOf(hourId);
-      // Update task
+      // Update task / localStorage
       dayObj[index].task = task;
-      // update obj in localStorage
       localStorage.setItem(day, JSON.stringify(dayObj));
     });
 
