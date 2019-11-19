@@ -42,6 +42,8 @@ textarea {
   background-color: #ffffff;
   color: #000000;
   border-top: 1px dashed #000000;
+  z-index: 1;
+  margin-right: -15px;
 }
 
 .past {
@@ -67,6 +69,7 @@ textarea {
   color: white;
   height: 100%;
   width: 100%;
+  margin-left: -15px;
 }
 
 .saveBtn i:hover {
@@ -79,4 +82,10 @@ textarea {
   padding: 10px;
   color: blue;
   cursor: pointer;
+}
+
+.fa-calendar-plus {
+  position: absolute;
+  left: 40%;
+  top: 20%;
 }

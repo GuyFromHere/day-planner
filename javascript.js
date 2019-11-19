@@ -1,42 +1,5 @@
 $(document).ready(function() {
-  var day = "";
-  function getDay(day) {
-    if (day === undefined) day = moment().day();
-    var days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday"
-    ];
-
-    var months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ];
-
-    return (
-      days[moment().day()] +
-      ", " +
-      months[moment().month()] +
-      " " +
-      moment().date() +
-      " " +
-      moment().year()
-    );
-  }
+  //var day = "";
 
   function buildDay(day) {
     // clear container before building page
@@ -61,6 +24,9 @@ $(document).ready(function() {
     var currHour = moment()
       .dayOfYear(day)
       .startOf("hour");
+
+    console.log("currHour: " + currHour);
+    console.log("hour: " + hour);
 
     for (var i = 0; i < 10; i++) {
       // Create new elements
@@ -98,7 +64,6 @@ $(document).ready(function() {
       otherDays.html(
         "<span id='prevDay'><<< Prev Day</span><span id='nextDay'>Next Day >>></span>"
       );
-      //newTextArea.val(dayObj[i].task);
 
       // Create day object if it does not exist.
       // If it does exist and there's info in a task, put it in the textarea
@@ -111,7 +76,7 @@ $(document).ready(function() {
 
       // Label hour
       newHour.text(hour.format("ha"));
-      newSaveBtn.html('<i class="far fa-calendar-plus"></i>');
+      newSaveBtn.html('<i class="far fa-calendar-plus fa-3x"></i>');
 
       // Append elements to page
       $("#currentDay").append(otherDays);
