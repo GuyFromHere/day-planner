@@ -1,12 +1,7 @@
 $(document).ready(function() {
-  //var day = "";
-
   function buildDay(day) {
     // clear container before building page
     $(".container").empty();
-
-    // REM
-    //var dayObj = JSON.parse(localStorage.getItem(day)) || [];
 
     // Set Day
     if (day === undefined) day = moment().dayOfYear();
@@ -17,16 +12,11 @@ $(document).ready(function() {
       var dayObj = [];
     }
 
-    // get 8AM
+    // get 8AM on dayOfYear(day)
     var hour = moment().dayOfYear(day);
     hour = hour.set("hour", 8).startOf("hour");
-    // Get current hour for classes
-    var currHour = moment()
-      .dayOfYear(day)
-      .startOf("hour");
-
-    console.log("currHour: " + currHour);
-    console.log("hour: " + hour);
+    // Get current hour
+    var currHour = moment().startOf("hour");
 
     for (var i = 0; i < 10; i++) {
       // Create new elements
@@ -62,7 +52,9 @@ $(document).ready(function() {
           .format("dddd, MMMM Do YYYY")
       );
       otherDays.html(
-        "<span id='prevDay'><<< Prev Day</span><span id='nextDay'>Next Day >>></span>"
+        "<span id='prevDay'>Prev Day</span>" +
+          "<span id='thisDay'>Today</span>" +
+          "<span id='nextDay'>Next Day</span>"
       );
 
       // Create day object if it does not exist.
@@ -80,7 +72,8 @@ $(document).ready(function() {
 
       // Append elements to page
       $("#currentDay").append(otherDays);
-      prevDay.append(nextDay);
+
+      /* prevDay.append(nextDay); */
       newRow.append(newHour);
       newTimeBlock.append(newTextArea);
       newRow.append(newTimeBlock);
@@ -109,6 +102,10 @@ $(document).ready(function() {
       localStorage.setItem(day, JSON.stringify(dayObj));
     });
 
+    ///////////////////
+    // Event handlers
+    ///////////////////
+
     $("#prevDay").on("click", function() {
       day -= 1;
       buildDay(day);
@@ -117,6 +114,10 @@ $(document).ready(function() {
     $("#nextDay").on("click", function() {
       day += 1;
       buildDay(day);
+    });
+
+    $("#thisDay").on("click", function() {
+      buildDay();
     });
   }
 

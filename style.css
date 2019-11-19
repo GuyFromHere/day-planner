@@ -78,7 +78,8 @@ textarea {
 }
 
 #prevDay,
-#nextDay {
+#nextDay,
+#thisDay {
   padding: 10px;
   color: blue;
   cursor: pointer;

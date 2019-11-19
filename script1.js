@@ -1,49 +1,9 @@
 $(document).ready(function() {
   var day = "";
-  function getDay(day) {
-    if (day === undefined) day = moment().day();
-    var days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday"
-    ];
-
-    var months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ];
-
-    return (
-      days[moment().day()] +
-      ", " +
-      months[moment().month()] +
-      " " +
-      moment().date() +
-      " " +
-      moment().year()
-    );
-  }
 
   function buildDay(day) {
     // clear container before building page
     $(".container").empty();
-
-    // REM
-    //var dayObj = JSON.parse(localStorage.getItem(day)) || [];
 
     // Set Day
     if (day === undefined) day = moment().dayOfYear();
@@ -98,7 +58,6 @@ $(document).ready(function() {
       otherDays.html(
         "<span id='prevDay'><<< Prev Day</span><span id='nextDay'>Next Day >>></span>"
       );
-      //newTextArea.val(dayObj[i].task);
 
       // Create day object if it does not exist.
       // If it does exist and there's info in a task, put it in the textarea
