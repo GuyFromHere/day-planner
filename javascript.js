@@ -64,11 +64,15 @@ $(document).ready(function() {
         newTextArea.val(dayObj[i].task);
       } else {
         newTextArea.val(dayObj[i].task);
+        if (dayObj[i].task.length > 0) {
+          newSaveBtn.addClass("saved");
+        }
       }
 
       // Label hour
       newHour.text(hour.format("ha"));
-      newSaveBtn.html('<i class="far fa-calendar-plus fa-3x"></i>');
+      newSaveBtn.html('<i class="far fa-save fa-lg"></i>');
+      //'<i class="far fa-calendar-plus fa-lg"></i>'
 
       // Append elements to page
       $("#currentDay").append(otherDays);
@@ -100,11 +104,19 @@ $(document).ready(function() {
       // Update task / localStorage
       dayObj[index].task = task;
       localStorage.setItem(day, JSON.stringify(dayObj));
+      // Add 'saved' style to let the user know that the data is saved
+      $("#" + hourId).addClass("saved");
     });
 
     ///////////////////
     // Event handlers
     ///////////////////
+
+    // change saveBtn class when user starts typing to let them know that the entry has not been saved
+    /* $("textarea").keypress(function() {
+      console.log("pressed");
+      $(".saveBtn").addClass("notSavedYet");
+    }); */
 
     $("#prevDay").on("click", function() {
       day -= 1;
