@@ -9,3 +9,5 @@ Simple day planner app. It uses moment.js and localStorage to show the user's pl
 ## Installation
 
 Download the files and open index.html in a browser.
+
+![Day Planner](planner.png)
